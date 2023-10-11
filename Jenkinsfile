@@ -11,9 +11,7 @@ pipeline {
 
         stage('Build and Deploy') {
             steps {
-                // Install Node.js and NPM
-                sh 'curl -sL https://deb.nodesource.com/setup_14.x | bash -'
-                sh 'apt-get install -y nodejs'
+               
 
                 // Install project dependencies
                 sh 'npm install'
