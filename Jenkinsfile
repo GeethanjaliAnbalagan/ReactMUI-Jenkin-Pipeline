@@ -1,9 +1,5 @@
 pipeline {
     agent any
-    
-    environment {
-        NODEJS_HOME = tool name: 'NodeJS', type: 'Tool'
-    }
 
     stages {
         stage('Checkout') {
@@ -12,41 +8,23 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
-            steps {
-                script {
-                    def npm = tool name: 'npm', type: 'Tool'
-                    sh "${npm} install"
-                }
-            }
-        }
-
         stage('Build') {
             steps {
                 script {
-                    def npm = tool name: 'npm', type: 'Tool'
-                    sh "${npm} run build"
-                }
-            }
-        }
+                    // Set up Node.js (you should configure Node.js in Jenkins Global Tool Configuration)
+                    def nodeHome = tool name: 'NodeJS', type: 'Tool'
+                    def npmHome = tool name: 'npm', type: 'Tool'
 
-        stage('Deploy') {
-            when {
-                expression { currentBuild.resultIsBetterOrEqualTo('SUCCESS') }
-            }
-            steps {
-                script {
-                    // Replace this with your deployment script
-                    sh 'echo "Deployment script goes here"'
+                    sh "${nodeHome}/bin/npm install"
+                    sh "${nodeHome}/bin/npm run build"
                 }
             }
         }
     }
 
     post {
-        always {
-            // Archive your build artifacts (e.g., build directory) for later reference.
-            archiveArtifacts 'build/**'
+        success {
+            archiveArtifacts(allowEmptyArchive: true, artifacts: '*/build/*')
         }
     }
 }
