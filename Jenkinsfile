@@ -1,9 +1,11 @@
 pipeline {
     agent any
-
+    
     stages {
         stage('Checkout') {
             steps {
+                // Ensure you have Git installed on your Windows Jenkins agent
+                bat 'git clean -xdf'  // Optional: Clean up any untracked files
                 checkout scm
             }
         }
@@ -11,12 +13,15 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    // Set up Node.js (you should configure Node.js in Jenkins Global Tool Configuration)
+                    // Set up Node.js (configured in Jenkins Global Tool Configuration)
                     def nodeHome = tool name: 'NodeJS', type: 'Tool'
                     def npmHome = tool name: 'npm', type: 'Tool'
-
-                    sh "${nodeHome}/bin/npm install"
-                    sh "${nodeHome}/bin/npm run build"
+                    
+                    // Change to the project directory where your package.json is located
+                    dir('path/to/your/project') {
+                        bat "cd path/to/your/project && ${nodeHome}\\npm install"
+                        bat "cd path/to/your/project && ${nodeHome}\\npm run build"
+                    }
                 }
             }
         }
