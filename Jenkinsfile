@@ -21,9 +21,7 @@ pipeline {
                 // Build the React application
                 sh 'npm run build'
 
-                // Deploy to a web server (customize this step)
-                // For a simple example, you can copy the build folder to a web server
-                sh 'rsync -av build/ /var/www/html/'
+              
             }
         }
     }
